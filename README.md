@@ -31,7 +31,7 @@ end)
 
 myAery:Clean() --30
 ```
-### 2. Referencing the parent
+### *2. Referencing the parent*
 
 Create an Aery inside of an Aery:
 ```luau
@@ -68,7 +68,7 @@ myAery:Clean()
 -- secondAery cleaned!
 ```
 
-### 3. Custom cleaning wrappers
+### *3. Custom cleaning wrappers*
 
 You can pass a table with custom cleanup functions for value types.
 
