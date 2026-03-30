@@ -3,18 +3,17 @@
 --!native
 
 --[[
-    AERY: GARBAGE COLLECTOR MODULE and PART OF ALLURE ECOSYSTEM
+    AERY: More than a maid-like garbage collector for Luau and the Allure Ecosystem
     By r-iva9
-    1.0.0
     Open source (MIT)
     https://github.com/r-iva9/Aery
 
     ALLURE FULLSTACK ECOSYSTEM
     By r-iva9
-	1.1.0
 	Open source (MIT)
 	https://github.com/r-iva9/Allure
 ]]
+local VERSION = "1.0.1"
 
 ------------
 -- TYPES
@@ -51,6 +50,7 @@ export type Aery = setmetatable<
 		__call: fn,
 		__index: {
 			Insert: typeof(table.insert),
+			GiveTask: typeof(table.insert),
 			Remove: typeof(table.remove),
 
 			--- Use `used` as a new dependency of this Aery
@@ -163,14 +163,16 @@ end
 
 local Aery = {
 	Name = "Aery",
-	Version = "1.0.0",
+	Version = VERSION,
 	Author = "r-iva9",
 
 	--- ALLURE
 	Tags = {
 		Priority = 0,
+		Instance = script,
 	},
 	Dependencies = {},
+	Instance = script,
 }
 
 --[[
@@ -247,7 +249,7 @@ end
 	local smallAery = myAery:Aery()
 
 	-- Clean everything, including smallAery, but keep instances:
-	myAery  {
+	myAery {
 		Instance = function(k, v, t)
 			t[k] = v
 		end
@@ -265,6 +267,7 @@ Aery.Aery = function<S, T...>(self: S, ...: T...)
 		end,
 		__index = setmetatable({
 			Insert = table.insert,
+			GiveTask = table.insert,
 			Remove = table.remove,
 			Use = function<S, T>(self: S, used: T)
 				table.insert(dep, used)

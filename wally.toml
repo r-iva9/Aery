@@ -1,6 +1,6 @@
 [package]
 name = "r-iva9/aery"
-description = "More than a garbage collector for Luau."
+description = "More than a maid-like garbage collector for Luau and the Allure Ecosystem."
 license = "MIT"
 authors = ["r-iva9"]
 version = "1.0.0"
