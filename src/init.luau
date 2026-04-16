@@ -150,7 +150,7 @@ end
 	}, key, value)
 	```
 ]]
-local function equalityCases<T, V>(argument: T, cases: { [V]: fn }, ...)
+local function equalityCases<T, V>(argument: T, cases: { [V]: (any) -> () }, ...)
 	for condition, case in cases do
 		if argument == condition then
 			return case(...)
@@ -205,9 +205,27 @@ Aery.Clean = function<S>(self: S, t: table, cleanupWrapper: { [string]: fn }?)
 		RBXScriptConnection = function(i, s: RBXScriptConnection)
 			s:Disconnect()
 		end,
-		["table"] = function(i: number, s: table)
+		["table"] = function(i: number, s)
+			if s.Destroy then
+				s.Destroy(s)
+			elseif s.destroy then
+				s.destroy(s)
+			elseif s.__deleter then
+				s.__deleter(s)
+			elseif
+				getmetatable(s) ~= nil
+				and ref(getmetatable(s)).__index
+				and ref(getmetatable(s)).__index.Clean ~= nil
+			then
+				s:Clean()
+			else
+				Aery:Clean(s :: any)
+			end
+			--[[
 			equalityCases(true, {
-				[getmetatable(s) ~= nil and ref(getmetatable(s)).__index.Clean ~= nil] = function(s: any)
+				[(getmetatable(s) ~= nil and ref(getmetatable(s)).__index and ref(getmetatable(s)).__index.Clean ~= nil) and true or false] = function(
+					s: any
+				)
 					s:Clean()
 				end,
 				[s.Destroy ~= nil] = s.Destroy,
@@ -216,10 +234,11 @@ Aery.Clean = function<S>(self: S, t: table, cleanupWrapper: { [string]: fn }?)
 				[s._destroy ~= nil] = s._destroy,
 				[s.__deleter ~= nil] = s.__deleter,
 				[s.__destroy ~= nil] = s.__destroy,
-				[true] = function(s: table)
-					Aery:Clean(s)
-				end,
-			}, s)
+				--[s.Destroy == nil] = function(s: table)
+				--	warn("ENTIRELY CLEANING", s)
+				--	Aery:Clean(s)
+				--end,
+			}, s)]]
 		end,
 	}
 
